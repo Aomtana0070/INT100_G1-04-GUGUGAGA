@@ -11,7 +11,7 @@
 ### อังเปา — ณธรรศ ลิ้มสวัสดิ์
 *เขียนโดย : ธนาพิสิษฐ์ อ่อนสร้อย github:Aomtana0070*
 
-<p align="center"><img src="./อังเปา.jpg" alt="อังเปา" style="max-width:50%;height:auto"></p>
+<p align="center"><img src="./images/อังเปา.jpg" alt="อังเปา" style="max-width:35%;height:auto;border:3px solid #333;border-radius:10px;padding:5px;"></p>
 
 **เหตุผลที่เพื่อนทำไมถึงเลือกเรียนในสายนี้ เพราะอะไร**  
 อังเปาเลือกเรียนสาย IT เพราะเขามองว่าเป็นความรู้ที่สามารถนำไปใช้ได้จริงในหลายด้าน ไม่ว่าจะเป็นการทำโปรแกรม เว็บไซต์ ระบบ หรือเทคโนโลยีต่าง ๆ จึงเชื่อว่าสายนี้สามารถต่อยอดได้กว้างและมีโอกาสมากมายในอนาคต
@@ -37,7 +37,7 @@ IG: https://www.instagram.com/2403up/
 ### อิน — นางสาวศรุดา สุวรรณกล่อม
 *เขียนโดย : @github-norrawit45-sys*
 
-<p align="center"><img src="./รูปอิน.jpg" alt="อิน" style="max-width:40%;height:auto"></p>
+<p align="center"><img src="./images/รูปอิน.jpg" alt="อิน" style="max-width:35%;height:auto;border:3px solid #333;border-radius:10px;padding:5px;"></p>
 
 * **Github :** SarudaS https://github.com/SarudaS
 * **IG :** srdxw_ https://www.instagram.com/srdxw_
@@ -54,7 +54,7 @@ IG: https://www.instagram.com/2403up/
 
 ### ออม — ธนาพิสิษฐ์ อ่อนสร้อย
 
-<p align="center"><img src="./aom.png" alt="ออม" style="max-width:50%;height:auto"></p>
+<p align="center"><img src="./images/aom.png" alt="ออม" style="max-width:35%;height:auto;border:3px solid #333;border-radius:10px;padding:5px;"></p>
 
 **เหตุผลที่เพื่อนทำไมถึงเลือกเรียนในสายนี้ เพราะอะไร**  
 ออมเลือกเรียนสาย IT เพราะเขาชอบการสร้างหรือการพัฒนาสิ่งของต่าง ๆ และตอนมัธยมออมได้มีโอกาสไปแข่งสร้างเกมทำให้คิดว่านี่เป็นตัวตนของเขา
@@ -84,7 +84,7 @@ Git HUB: https://github.com/Aomtana0070
 ### โชกุน — นายรวิชญ์ สังข์ภิรมย์
 *เขียนโดย : github-SarudaS*
 
-<p align="center"><img src="./โชกุน.jpg" alt="โชกุน" style="max-width:50%;height:auto"></p>
+<p align="center"><img src="./images/โชกุน.jpg" alt="โชกุน" style="max-width:35%;height:auto;border:3px solid #333;border-radius:10px;padding:5px;"></p>
 
 <br>
 
@@ -111,7 +111,7 @@ Git HUB: https://github.com/Aomtana0070
 
 ### จอห์น — จอห์น ตั้น
 
-<p align="center"><img src="./รูปจอห์น.png" alt="จอห์น" style="max-width:50%;height:auto"></p>
+<p align="center"><img src="./images/รูปจอห์น.png" alt="จอห์น" style="max-width:35%;height:auto;border:3px solid #333;border-radius:10px;padding:5px;"></p>
 
 **ทำไมถึงเลือกเรียนในสายนี้ เพราะอะไร**  
 เลือกเรียนสายนี้เพราะมองว่า IT เป็นสายที่มีโอกาสพัฒนาและต่อยอดได้หลากหลาย จึงอยากเรียนรู้และนำความรู้ไปสร้างผลงานหรือพัฒนาสิ่งที่สามารถแก้ปัญหาในชีวิตจริงได้ในอนาคต
@@ -136,7 +136,7 @@ IG: https://www.instagram.com/cchhntxn/
 
 ### ฮิว — วัชชิรพงษ์ ธนโชติคณาทิวัตถ์
 
-<p align="center"><img src="./ฮิว.jpg" alt="ฮิว" style="max-width:40%;height:auto"></p>
+<p align="center"><img src="./images/ฮิว.jpg" alt="ฮิว" style="max-width:35%;height:auto;border:3px solid #333;border-radius:10px;padding:5px;"></p>
 
 **ทำไมถึงเลือกเรียนในสายนี้ เพราะอะไร**  
 เลือกเรียน IT เพราะส่วนตัวชอบเรื่องเทคโนโลยีอยู่แล้ว แล้วก็คิดว่าสายนี้สามารถต่อยอดไปทำงานได้หลายด้าน และน่าจะมีโอกาสเติบโตในอนาคตด้วย
