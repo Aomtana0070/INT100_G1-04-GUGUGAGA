@@ -115,4 +115,4 @@
 
 
 
-![Journey Mapping ](Materials/Journey_Mapping.png)
+![Journey Mapping ](Materials/Journey_Mapping.jpg)
