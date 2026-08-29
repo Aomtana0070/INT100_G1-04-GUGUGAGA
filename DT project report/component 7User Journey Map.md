@@ -113,6 +113,14 @@
 
 ภาพรวมดี แม้จะมีปัญหาย่อยบางประการ
 
+![Journey Mapping ](Materials/Journey_Mapping_overall.jpg)
 
+##  User Journey Map by user prosona
+**น้องฝ้าย**
+![Journey Mapping ](Materials/Journey_Mapping_น้องฝ้าย.jpg)
 
-![Journey Mapping ](Materials/Journey_Mapping.jpg)
+**คุณสมศรี**
+![Journey Mapping ](Materials/Journey_Mapping_คุณสมศรี.jpg)
+
+**คุณเอกชัย**
+![Journey Mapping ](Materials/Journey_Mapping_คุณเอกชัย.jpg)
