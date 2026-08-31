@@ -31,7 +31,7 @@
   * ตรวจจับการหกล้มด้วยอัตราส่วน Aspect Ratio ($w/h > 1.1$) ร่วมกับระบบจับเวลาค้าง (Fall Duration Threshold)
 * Issues Found:
     *   **ขนาดกล้อง cv.2 เล็กไป**
-    *   **ยังไงไม่เชื่อมกับ Dashboard**
+    *   **ยังไม่เชื่อมกับ Dashboard**
 
 ---
 # 📌 Version 2.0 — Pose Keypoints PDPA & Visual ROI
