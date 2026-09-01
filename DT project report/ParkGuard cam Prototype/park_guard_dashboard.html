@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParkGuard - AI Safety & Surveillance Workspace</title>
+    <style>
+        :root {
+            --bg-dark: #0b0b0d;
+            --card-bg: #141417;
+            --card-border: #222227;
+            --card-hover: #1b1b20;
+            --accent-orange: #f97316;
+            --accent-green: #22c55e;
+            --accent-red: #ef4444;
+            --accent-blue: #3b82f6;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --input-bg: #1f1f24;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            padding: 16px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            overflow-x: hidden;
+        }
+
+        /* Header Bar */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 10px 20px;
+            border-radius: 10px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            color: #fff;
+            font-weight: 900;
+            font-size: 14px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            letter-spacing: 1px;
+        }
+
+        .brand-title h1 {
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .brand-title p {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .nav-tabs {
+            display: flex;
+            background-color: #0b0b0d;
+            padding: 4px;
+            border-radius: 8px;
+            gap: 4px;
+        }
+
+        .nav-tab {
+            padding: 6px 16px;
+            font-size: 13px;
+            color: var(--text-muted);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            background: transparent;
+        }
+
+        .nav-tab.active {
+            background-color: #27272a;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background-color: rgba(34, 197, 94, 0.1);
+            color: var(--accent-green);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-green);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--accent-green);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.2); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Top Metric Cards */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .metric-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            padding: 16px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: var(--accent-orange);
+            opacity: 0.7;
+        }
+
+        .metric-card.green::after { background: var(--accent-green); }
+        .metric-card.red::after { background: var(--accent-red); }
+        .metric-card.blue::after { background: var(--accent-blue); }
+
+        .metric-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.8px;
+        }
+
+        .metric-value {
+            font-size: 26px;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: -0.5px;
+        }
+
+        .metric-sub {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .metric-sub.highlight-green { color: var(--accent-green); font-weight: 600; }
+        .metric-sub.highlight-red { color: var(--accent-red); font-weight: 600; }
+
+        /* Main Workspace Grid */
+        .workspace-grid {
+            display: grid;
+            grid-template-columns: 7fr 5fr;
+            gap: 16px;
+        }
+
+        .panel {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-title {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.8px;
+        }
+
+        .panel-meta {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-family: monospace;
+        }
+
+        /* Video Feed Box */
+        .video-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background-color: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #27272a;
+        }
+
+        canvas#videoCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .video-overlay-header {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            right: 12px;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none;
+        }
+
+        .cam-tag {
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-family: monospace;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .video-overlay-footer {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            right: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cam-controls-bar {
+            background-color: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            padding: 6px 12px;
+            border-radius: 6px;
+            display: flex;
+            gap: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-cam {
+            background-color: #27272a;
+            color: #fff;
+            border: 1px solid #3f3f46;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-cam:hover { background-color: #3f3f46; }
+        .btn-cam.active { background-color: var(--accent-orange); border-color: var(--accent-orange); }
+
+        /* Tables */
+        .table-container {
+            overflow-x: auto;
+            max-height: 380px;
+            overflow-y: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #18181b;
+            color: var(--text-muted);
+            padding: 8px 12px;
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: sticky;
+            top: 0;
+        }
+
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #1f1f23;
+            color: var(--text-main);
+        }
+
+        tr:hover { background-color: var(--card-hover); }
+
+        .badge-status {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .badge-loss { background-color: rgba(239, 68, 68, 0.15); color: var(--accent-red); }
+        .badge-win { background-color: rgba(34, 197, 94, 0.15); color: var(--accent-green); }
+        .badge-pending { background-color: rgba(249, 115, 22, 0.15); color: var(--accent-orange); }
+
+        /* Bottom Row Grid */
+        .bottom-grid {
+            display: grid;
+            grid-template-columns: 3.5fr 3.5fr 5fr;
+            gap: 16px;
+        }
+
+        /* Controls & Indicators */
+        .control-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #1f1f23;
+        }
+
+        .control-item:last-child { border-bottom: none; }
+
+        .control-label {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .control-val {
+            font-size: 12px;
+            font-weight: 600;
+            font-family: monospace;
+        }
+
+        .btn-group-toggle {
+            display: flex;
+            background-color: #18181b;
+            padding: 2px;
+            border-radius: 6px;
+            border: 1px solid #27272a;
+        }
+
+        .btn-toggle {
+            padding: 4px 10px;
+            font-size: 11px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .btn-toggle.active {
+            background-color: #27272a;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .btn-action-call {
+            background-color: rgba(34, 197, 94, 0.15);
+            color: var(--accent-green);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            width: 100%;
+            padding: 8px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .btn-action-put {
+            background-color: rgba(239, 68, 68, 0.15);
+            color: var(--accent-red);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            width: 100%;
+            padding: 8px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        /* AI Luna Box */
+        .ai-chat-box {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .ai-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ai-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #fb923c, #ea580c);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 10px rgba(249, 115, 22, 0.4);
+            font-weight: 900;
+            font-size: 14px;
+        }
+
+        .ai-meta h3 {
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .ai-meta p {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .chat-history {
+            background-color: #0d0d0f;
+            border: 1px solid #1f1f24;
+            border-radius: 8px;
+            padding: 10px;
+            height: 110px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-size: 12px;
+        }
+
+        .msg-bubble {
+            padding: 6px 10px;
+            border-radius: 6px;
+            max-width: 85%;
+            line-height: 1.4;
+        }
+
+        .msg-ai {
+            background-color: #1c1c21;
+            color: #e5e7eb;
+            align-self: flex-start;
+            border: 1px solid #27272a;
+        }
+
+        .msg-user {
+            background-color: var(--accent-orange);
+            color: #fff;
+            align-self: flex-end;
+        }
+
+        .input-bar {
+            display: flex;
+            gap: 8px;
+        }
+
+        .input-bar input {
+            flex: 1;
+            background-color: var(--input-bg);
+            border: 1px solid var(--card-border);
+            padding: 8px 12px;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 12px;
+            outline: none;
+        }
+
+        .input-bar input:focus { border-color: var(--accent-orange); }
+
+        .btn-send {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        /* Audio Alert Indicator */
+        .alarm-banner {
+            display: none;
+            background-color: var(--accent-red);
+            color: white;
+            padding: 8px;
+            text-align: center;
+            font-weight: bold;
+            border-radius: 6px;
+            font-size: 13px;
+            animation: blink 0.8s infinite alternate;
+        }
+
+        @keyframes blink {
+            from { opacity: 1; }
+            to { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Navigation -->
+    <div class="top-nav">
+        <div class="brand">
+            <div class="brand-logo">SC</div>
+            <div class="brand-title">
+                <h1>ParkGuard Command</h1>
+                <p>AI Safety & Surveillance Workspace</p>
+            </div>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active">Command</button>
+            <button class="nav-tab">Analytics</button>
+            <button class="nav-tab">Settings</button>
+        </div>
+
+        <div class="top-actions">
+            <div class="status-badge">
+                <div class="pulse-dot"></div>
+                SYSTEM RUNNING
+            </div>
+            <button class="btn-cam" id="themeBtn">Dark Theme</button>
+        </div>
+    </div>
+
+    <!-- Alarm Banner -->
+    <div class="alarm-banner" id="alarmBanner">
+        🚨 DETECTED ACCIDENT / FALL IN ZONE A! ALERT SENT TO DISCORD & SECURITY TEAM!
+    </div>
+
+    <!-- Metric Cards -->
+    <div class="metrics-grid">
+        <div class="metric-card">
+            <div class="metric-label">Active Cameras</div>
+            <div class="metric-value">12 / 12</div>
+            <div class="metric-sub highlight-green">● All Systems Nominal</div>
+        </div>
+        <div class="metric-card green">
+            <div class="metric-label">AI Win Rate / Accuracy</div>
+            <div class="metric-value">98.4%</div>
+            <div class="metric-sub">YOLOv8-Pose Model</div>
+        </div>
+        <div class="metric-card red">
+            <div class="metric-label">Today Incidents</div>
+            <div class="metric-value" id="todayIncidents">2</div>
+            <div class="metric-sub highlight-red">0 Unresolved</div>
+        </div>
+        <div class="metric-card blue">
+            <div class="metric-label">Safe Duration Streak</div>
+            <div class="metric-value">14 Days</div>
+            <div class="metric-sub">Zero critical delays</div>
+        </div>
+    </div>
+
+    <!-- Main Workspace -->
+    <div class="workspace-grid">
+        <!-- Left: Live Video Feed Canvas -->
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-title">LIVE FEED — CAM-01: NORTH PARK LAKE (RTSP)</div>
+                <div class="panel-meta">1080p • 30 FPS • CUDA Acceleration</div>
+            </div>
+
+            <div class="video-container">
+                <canvas id="videoCanvas" width="800" height="450"></canvas>
+
+                <div class="video-overlay-header">
+                    <div class="cam-tag">LIVE STREAMS • PARK CENTRAL</div>
+                    <div class="cam-tag" style="color: #22c55e;">● YOLOv8-Pose Active</div>
+                </div>
+
+                <div class="video-overlay-footer">
+                    <div class="cam-controls-bar">
+                        <button class="btn-cam active" id="btnFullFrame">Full Frame</button>
+                        <button class="btn-cam" id="btnDrawROI">Draw ROI</button>
+                        <button class="btn-cam" id="btnClearROI">Clear ROI</button>
+                        <button class="btn-cam" id="btnSimulateFall" style="background-color: var(--accent-red); border-color: var(--accent-red);">Simulate Fall</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Recent Incidents Log Table -->
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-title">Recent Incidents Log</div>
+                <div class="panel-meta" id="logCount">3 Records</div>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Location</th>
+                            <th>Event</th>
+                            <th>Result</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="incidentTableBody">
+                        <tr>
+                            <td>13:23:05</td>
+                            <td>Zone A (Lake)</td>
+                            <td>Fall & Stay</td>
+                            <td><span class="badge-status badge-loss">CRITICAL</span></td>
+                            <td><span class="badge-status badge-win">RESOLVED</span></td>
+                        </tr>
+                        <tr>
+                            <td>10:25:12</td>
+                            <td>Zone C (Bike)</td>
+                            <td>Slip & Fall</td>
+                            <td><span class="badge-status badge-pending">MEDIUM</span></td>
+                            <td><span class="badge-status badge-win">RESOLVED</span></td>
+                        </tr>
+                        <tr>
+                            <td>08:15:40</td>
+                            <td>Zone B (Playground)</td>
+                            <td>SOS Gesture</td>
+                            <td><span class="badge-status badge-win">LOW</span></td>
+                            <td><span class="badge-status badge-win">RESOLVED</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Row -->
+    <div class="bottom-grid">
+        <!-- AI Threshold Settings -->
+        <div class="panel">
+            <div class="panel-title">AI Detector Parameters</div>
+
+            <div class="control-item">
+                <span class="control-label">Pose Sensitivity</span>
+                <span class="control-val">Aggressive</span>
+            </div>
+            <div class="control-item">
+                <span class="control-label">Fall Timer Threshold</span>
+                <span class="control-val">3.0 s</span>
+            </div>
+            <div class="control-item">
+                <span class="control-label">Aspect Ratio Threshold</span>
+                <span class="control-val">W > 1.1 × H</span>
+            </div>
+            <div class="control-item">
+                <span class="control-label">Privacy Blur (PDPA)</span>
+                <div class="btn-group-toggle">
+                    <button class="btn-toggle active" id="blurOn">ON</button>
+                    <button class="btn-toggle" id="blurOff">OFF</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Controls -->
+        <div class="panel">
+            <div class="panel-title">Surveillance Controls</div>
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 4px;">
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn-action-call" id="btnManualAlert">🚨 MANUAL DISPATCH</button>
+                    <button class="btn-action-put" id="btnPauseAlert">⏸ PAUSE ALERTS</button>
+                </div>
+                <div class="control-item">
+                    <span class="control-label">Discord Webhook State</span>
+                    <span class="control-val" style="color: var(--accent-green);">CONNECTED</span>
+                </div>
+                <div class="control-item">
+                    <span class="control-label">Hardware Acceleration</span>
+                    <span class="control-val" style="color: var(--accent-blue);">NVIDIA CUDA</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Assistant (Luna) -->
+        <div class="panel">
+            <div class="ai-chat-box">
+                <div class="ai-header">
+                    <div class="ai-avatar">✦</div>
+                    <div class="ai-meta">
+                        <h3>Luna AI Assistant</h3>
+                        <p>RUNNING • Park Security Intelligence</p>
+                    </div>
+                </div>
+
+                <div class="chat-history" id="chatHistory">
+                    <div class="msg-bubble msg-ai">
+                        สวัสดีครับ ผม Luna AI ยินดีช่วยเหลือครับ สามารถสอบถามประวัติเหตุการณ์ สถิติ หรือสั่งงานระบบตรวจจับในสวนได้เลยครับ
+                    </div>
+                </div>
+
+                <div class="input-bar">
+                    <input type="text" id="userInput" placeholder="พิมพ์ข้อความถาม Luna เช่น 'สรุปเหตุการณ์วันนี้'..." onkeypress="handleKeyPress(event)">
+                    <button class="btn-send" onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive Canvas & UI Script -->
+    <script>
+        const canvas = document.getElementById('videoCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let isRoiMode = false;
+        let roiPoints = [];
+        let isDrawing = false;
+        let simulateFallActive = false;
+        let simulatedTimer = 0;
+        let todayCount = 2;
+
+        // Canvas Simulation Loop
+        let personX = 200;
+        let personY = 220;
+        let personDx = 1.5;
+        let isFallen = false;
+
+        function drawCanvas() {
+            ctx.fillStyle = '#0f0f12';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw grid lines
+            ctx.strokeStyle = '#1e1e24';
+            ctx.lineWidth = 1;
+            for(let x = 0; x < canvas.width; x += 40) {
+                ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+            }
+            for(let y = 0; y < canvas.height; y += 40) {
+                ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+            }
+
+            // Draw Park Scene elements (Lake border)
+            ctx.fillStyle = '#1e293b';
+            ctx.fillRect(500, 50, 260, 350);
+            ctx.fillStyle = '#38bdf8';
+            ctx.font = '12px monospace';
+            ctx.fillText('PARK LAKE (HIGH RISK ZONE)', 520, 80);
+
+            // Draw ROI if set
+            if (roiPoints.length === 2) {
+                ctx.strokeStyle = '#f59e0b';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([6, 6]);
+                const w = roiPoints[1].x - roiPoints[0].x;
+                const h = roiPoints[1].y - roiPoints[0].y;
+                ctx.strokeRect(roiPoints[0].x, roiPoints[0].y, w, h);
+                ctx.fillStyle = 'rgba(245, 158, 11, 0.1)';
+                ctx.fillRect(roiPoints[0].x, roiPoints[0].y, w, h);
+                ctx.setLineDash([]);
+                ctx.fillStyle = '#f59e0b';
+                ctx.fillText('CUSTOM ROI ACTIVE', roiPoints[0].x + 5, roiPoints[0].y - 8);
+            }
+
+            // Move simulated person
+            if (!isFallen) {
+                personX += personDx;
+                if (personX > 450 || personX < 150) personDx *= -1;
+            }
+
+            // Render Person Pose Skeleton
+            if (!isFallen) {
+                // Standing person
+                const px = personX;
+                const py = personY;
+                
+                // Bounding Box
+                ctx.strokeStyle = '#22c55e';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(px - 25, py - 80, 50, 110);
+                ctx.fillStyle = '#22c55e';
+                ctx.fillText('Person 96%', px - 25, py - 88);
+
+                // Skeleton
+                ctx.fillStyle = '#00ffcc';
+                ctx.beginPath(); ctx.arc(px, py - 60, 8, 0, Math.PI*2); ctx.fill(); // Head
+                ctx.strokeStyle = '#00ffcc';
+                ctx.beginPath(); ctx.moveTo(px, py - 52); ctx.lineTo(px, py - 10); ctx.stroke(); // Body
+                ctx.beginPath(); ctx.moveTo(px, py - 40); ctx.lineTo(px - 18, py - 20); ctx.stroke(); // Left Arm
+                ctx.beginPath(); ctx.moveTo(px, py - 40); ctx.lineTo(px + 18, py - 20); ctx.stroke(); // Right Arm
+                ctx.beginPath(); ctx.moveTo(px, py - 10); ctx.lineTo(px - 15, py + 30); ctx.stroke(); // Left Leg
+                ctx.beginPath(); ctx.moveTo(px, py - 10); ctx.lineTo(px + 15, py + 30); ctx.stroke(); // Right Leg
+            } else {
+                // Fallen person (Horizontal)
+                const px = personX;
+                const py = personY + 20;
+
+                // Red Bounding Box
+                ctx.strokeStyle = '#ef4444';
+                ctx.lineWidth = 3;
+                ctx.strokeRect(px - 60, py - 20, 120, 45);
+                ctx.fillStyle = '#ef4444';
+                ctx.font = 'bold 13px sans-serif';
+                ctx.fillText('🚨 FALL DETECTED! W/H Ratio: 2.6', px - 60, py - 28);
+
+                // Skeleton Horizontal
+                ctx.fillStyle = '#ef4444';
+                ctx.beginPath(); ctx.arc(px - 45, py, 8, 0, Math.PI*2); ctx.fill(); // Head
+                ctx.strokeStyle = '#ef4444';
+                ctx.beginPath(); ctx.moveTo(px - 37, py); ctx.lineTo(px + 20, py); ctx.stroke(); // Body
+                ctx.beginPath(); ctx.moveTo(px - 20, py); ctx.lineTo(px - 10, py - 15); ctx.stroke(); // Arm
+                ctx.beginPath(); ctx.moveTo(px + 20, py); ctx.lineTo(px + 45, py - 10); ctx.stroke(); // Leg 1
+                ctx.beginPath(); ctx.moveTo(px + 20, py); ctx.lineTo(px + 48, py + 12); ctx.stroke(); // Leg 2
+
+                // Timer text
+                simulatedTimer += 0.03;
+                ctx.fillStyle = '#f97316';
+                ctx.font = 'bold 14px monospace';
+                ctx.fillText(`Fall Timer: ${simulatedTimer.toFixed(1)}s`, 20, 430);
+
+                if (simulatedTimer > 3.0 && !simulateFallActive) {
+                    simulateFallActive = true;
+                    triggerFallAlert();
+                }
+            }
+
+            requestAnimationFrame(drawCanvas);
+        }
+
+        drawCanvas();
+
+        // Simulate Fall Event
+        document.getElementById('btnSimulateFall').addEventListener('click', () => {
+            isFallen = !isFallen;
+            simulatedTimer = 0;
+            simulateFallActive = false;
+            if (!isFallen) {
+                document.getElementById('alarmBanner').style.display = 'none';
+            }
+        });
+
+        function triggerFallAlert() {
+            document.getElementById('alarmBanner').style.display = 'block';
+            todayCount++;
+            document.getElementById('todayIncidents').innerText = todayCount;
+
+            // Add to table
+            const tbody = document.getElementById('incidentTableBody');
+            const now = new Date();
+            const timeStr = now.toTimeString().split(' ')[0];
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${timeStr}</td>
+                <td>Zone A (Lake)</td>
+                <td>Fall & Stay</td>
+                <td><span class="badge-status badge-loss">CRITICAL</span></td>
+                <td><span class="badge-status badge-pending">DISPATCHED</span></td>
+            `;
+            tbody.insertBefore(tr, tbody.firstChild);
+
+            // Add AI chat notification
+            const chatHistory = document.getElementById('chatHistory');
+            const aiMsg = document.createElement('div');
+            aiMsg.className = 'msg-bubble msg-ai';
+            aiMsg.innerText = `🚨 แจ้งเตือนด่วน: ตรวจพบคนหกล้มบริเวณ Zone A (Lake) เวลา ${timeStr} ระบบส่งภาพ Snapshot เข้า Discord และแจ้งทีม รปภ. แล้วครับ!`;
+            chatHistory.appendChild(aiMsg);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+
+        // ROI Interaction
+        document.getElementById('btnDrawROI').addEventListener('click', () => {
+            isRoiMode = true;
+            document.getElementById('btnDrawROI').classList.add('active');
+            document.getElementById('btnFullFrame').classList.remove('active');
+        });
+
+        document.getElementById('btnFullFrame').addEventListener('click', () => {
+            isRoiMode = false;
+            roiPoints = [];
+            document.getElementById('btnFullFrame').classList.add('active');
+            document.getElementById('btnDrawROI').classList.remove('active');
+        });
+
+        document.getElementById('btnClearROI').addEventListener('click', () => {
+            roiPoints = [];
+        });
+
+        canvas.addEventListener('mousedown', (e) => {
+            if (!isRoiMode) return;
+            const rect = canvas.getBoundingClientRect();
+            const x = (e.clientX - rect.left) * (canvas.width / rect.width);
+            const y = (e.clientY - rect.top) * (canvas.height / rect.height);
+            roiPoints = [{x, y}];
+            isDrawing = true;
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (!isDrawing || !isRoiMode) return;
+            const rect = canvas.getBoundingClientRect();
+            const x = (e.clientX - rect.left) * (canvas.width / rect.width);
+            const y = (e.clientY - rect.top) * (canvas.height / rect.height);
+            if (roiPoints.length === 1) roiPoints.push({x, y});
+            else roiPoints[1] = {x, y};
+        });
+
+        canvas.addEventListener('mouseup', () => {
+            isDrawing = false;
+        });
+
+        // AI Chat Assistant Logic
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const chatHistory = document.getElementById('chatHistory');
+
+            // User Message
+            const userMsg = document.createElement('div');
+            userMsg.className = 'msg-bubble msg-user';
+            userMsg.innerText = text;
+            chatHistory.appendChild(userMsg);
+
+            input.value = '';
+
+            // AI Response Logic
+            setTimeout(() => {
+                const aiMsg = document.createElement('div');
+                aiMsg.className = 'msg-bubble msg-ai';
+
+                if (text.includes('สรุป') || text.includes('วันนี้')) {
+                    aiMsg.innerText = `📊 สรุปรายงานวันนี้: ตรวจพบเหตุการณ์รวม ${todayCount} ครั้ง (กล้อง Zone A ล้มนิ่ง 1 ครั้ง, Zone C 1 ครั้ง) สถานะแก้ไขแล้ว 100% ปัจจุบันกล้อง 12 ตัวทำงานปกติครับ`;
+                } else if (text.includes('ล้ม') || text.includes('กล้อง')) {
+                    aiMsg.innerText = `📷 กล้องหลักในการตรวจจับคือ CAM-01 (Zone A Lake) ตั้งค่า Threshold หน่วงไว้ที่ 3.0 วินาที พร้อมระบบส่งรูปเข้า Discord อัตโนมัติครับ`;
+                } else if (text.includes('สวัสดี') || text.includes('hi') || text.includes('hello')) {
+                    aiMsg.innerText = `สวัสดีครับ! มีอะไรให้ Luna ช่วยดูแลความปลอดภัยในสวนวันนี้ไหมครับ?`;
+                } else {
+                    aiMsg.innerText = `รับทราบครับ Luna บันทึกคำสั่ง "${text}" เรียบร้อยแล้ว ระบบกำลังมอนิเตอร์สถานการณ์อย่างต่อเนื่องครับ`;
+                }
+
+                chatHistory.appendChild(aiMsg);
+                chatHistory.scrollTop = chatHistory.scrollHeight;
+            }, 600);
+        }
+
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') sendMessage();
+        }
+    </script>
+</body>
+</html>
